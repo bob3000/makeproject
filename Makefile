@@ -1,24 +1,35 @@
-CC=clang
-CFLAGS=-g -Wall -O0
+CC=cc
+CFLAGS=
+CFLAGSDBG=-g -Wall -O0 $(CFLAGS)
+CFLAGSRELEASE=-Wall -O2 $(CFLAGS)
+LDLIBS=
 OBJDIR=obj
 BINDIR=bin
 SRCDIR=src
+DBGDIR=$(BINDIR)/debug
+RELEASEDIR=$(BINDIR)/release
 
 PROJDIR=$(shell basename $(CURDIR))
 SRCS=$(wildcard $(SRCDIR)/*.c)
 OBJS=$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
-BIN=$(BINDIR)/$(PROJDIR)
+DBGBUILD=$(DBGDIR)/$(PROJDIR)
+RELEASEBUILD=$(RELEASEDIR)/$(PROJDIR)
 
-all: $(BIN)
+all: $(DBGBUILD)
 
-release: CFLAGS=-Wall -O2 -DNDBUG
-release: clean $(BIN)
+release: clean $(RELEASEBUILD)
 
-$(BIN): $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@
+$(DBGBUILD): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) $(LDLIBS) -o $@
+
+$(RELEASEBUILD): $(OBJS)
+	$(CC) $(CFLAGSRELEASE) $(OBJS) $(LDLIBS) -o $@
 
 $(OBJDIR)/%o: $(SRCDIR)/%c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) -r $(BINDIR)/* $(OBJDIR)/*
+	$(RM) -r $(DBGDIR)/* $(RELEASEDIR)/* $(OBJDIR)/*
+
+run: $(DBGBUILD)
+	./$(DBGBUILD)
