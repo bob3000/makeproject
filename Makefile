@@ -1,7 +1,7 @@
 CC=cc
 CFLAGS=
-CFLAGSDBG=-g -Wall -O0 $(CFLAGS)
-CFLAGSRELEASE=-Wall -O2 $(CFLAGS)
+CFLAGSDBG=-g -Wall -O0
+CFLAGSRELEASE=-Wall -O2
 LDLIBS=
 OBJDIR=obj
 BINDIR=bin
@@ -15,15 +15,19 @@ OBJS=$(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 DBGBUILD=$(DBGDIR)/$(PROJDIR)
 RELEASEBUILD=$(RELEASEDIR)/$(PROJDIR)
 
-all: $(DBGBUILD)
+all: build
 
+build: CFLAGS=$(CFLAGSDBG)
+build: $(DBGBUILD)
+
+release: CFLAGS=$(CFLAGSRELEASE)
 release: clean $(RELEASEBUILD)
 
 $(DBGBUILD): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LDLIBS) -o $@
 
 $(RELEASEBUILD): $(OBJS)
-	$(CC) $(CFLAGSRELEASE) $(OBJS) $(LDLIBS) -o $@
+	$(CC) $(CFLAGS) $(OBJS) $(LDLIBS) -o $@
 
 $(OBJDIR)/%o: $(SRCDIR)/%c
 	$(CC) $(CFLAGS) -c $< -o $@
