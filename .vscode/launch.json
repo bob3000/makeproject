@@ -1,0 +1,21 @@
+{
+  "configurations": [
+    {
+      "type": "codelldb",
+      "request": "launch",
+      "name": "LaunchLLDB",
+      "program": "${workspaceFolder}/${input:myInput}"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "myInput",
+      "type": "pickString",
+      "description": "Your input",
+      "options": [
+        "bin/debug/makeproject"
+      ],
+      "default": "bin/debug/makeproject"
+    }
+  ]
+}
